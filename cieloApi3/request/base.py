@@ -35,8 +35,7 @@ class Base(object):
         prep = s.prepare_request(req)
 
         response = s.send(prep)
-
-        if 'json' in response.headers['Content-Type'].lower():
+        if ('Content-Type' in response.headers) and ('json' in response.headers['Content-Type'].lower()):
             answers = response.json()
         else:
             answers = [{
@@ -51,7 +50,6 @@ class Base(object):
                 errors.append('\r\n * [%s] %s\r\n' % (answer['Code'], answer['Message']))
 
             data_send = json.loads(body or 'null')
-
             raise_with_traceback(Exception('\r\n%s\r\nMethod: %s\r\nUri: %s\r\nData: %s' % (''.join(errors), method, response.url, json.dumps(data_send, indent=2))))
 
         return answers
